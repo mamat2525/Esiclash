@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Esiclash_game"
-run/main_scene="uid://ds3ttk1mmil4n"
+run/main_scene="uid://rmfwfc4urtwa"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 

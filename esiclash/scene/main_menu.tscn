@@ -1,0 +1,23 @@
+[gd_scene load_steps=2 format=3 uid="uid://rmfwfc4urtwa"]
+
+[ext_resource type="Script" uid="uid://cs2md6oeb3l6t" path="res://script/main_menu.gd" id="1_3er1b"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_3er1b")
+
+[node name="Boutton_jouer" type="Button" parent="."]
+offset_left = 144.0
+offset_top = 138.0
+offset_right = 295.0
+offset_bottom = 229.0
+text = "Jouer"
+
+[node name="Boutton_deck" type="Button" parent="."]
+offset_left = 589.0
+offset_top = 138.0
+offset_right = 740.0
+offset_bottom = 229.0
+text = "deck"
+
+[connection signal="button_down" from="Boutton_jouer" to="." method="_on_boutton_jouer_button_down"]
+[connection signal="button_down" from="Boutton_deck" to="." method="_on_boutton_deck_button_down"]
