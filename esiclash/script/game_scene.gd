@@ -1,68 +1,73 @@
-extends Node2D
+extends Control
 
 var player: Player = Player.new()
 var opponent: Player = Player.new()
 var current_turn: int = 0 # 0 = joueur local, 1 = adversaire
 var opponent_id: int
 var is_first: bool
-
+#var card
 # Références aux nœuds de l’interface utilisateur
 @onready var hand_container = $PlayerField/HandContainer  # HBoxContainer pour la main
-@onready var health_label = $PlayerField/HealthLabel       # Label pour les PV
-@onready var energy_label = $PlayerField/EnergyLabel       # Label pour l’énergie
-@onready var esisarien_slots = $PlayerField/EsisarienSlots # HBoxContainer pour les Esisariens
-@onready var object_slots = $PlayerField/ObjectSlots       # HBoxContainer pour les Objets
+
+var object_esiSlotsAllie
+var object_esiSlotsEnnemi
+var object_objSlotsAllie
+var object_objSlotsEnnemi
 
 func _ready():
 	if is_first:
 		current_turn = 0
 	else:
 		current_turn = 1
+	
+	object_esiSlotsAllie = Slots.new($PlayerField/EsisarienSlotsAllié, Card.CardType.ESISARIEN, Slots.JoueurType.ALLIE)
+	object_esiSlotsEnnemi = Slots.new($PlayerField/EsisarienSlotsEnnemi, Card.CardType.ESISARIEN, Slots.JoueurType.ENNEMI)
+	object_objSlotsAllie = Slots.new($PlayerField/ObjetSlotsAllié, Card.CardType.OBJET, Slots.JoueurType.ALLIE)
+	object_objSlotsEnnemi = Slots.new($PlayerField/ObjetSlotsEnnemi, Card.CardType.OBJET, Slots.JoueurType.ENNEMI)
+	
+	
 	initialize_game()
-	update_ui()
-	start_turn()
+	#update_ui()
+	#start_turn()
+	
+	for i in range(5):
+		object_esiSlotsAllie.placerCarte(Card.new((randi() % 70)+67), i)
+		object_esiSlotsEnnemi.placerCarte(Card.new((randi() % 70)+67), i)
+	
+	for i in range(5):
+		object_objSlotsAllie.placerCarte(Card.new((randi() % 42)+138),i)
+		object_objSlotsEnnemi.placerCarte(Card.new((randi() % 42)+138),i)
+	
+	
+func updatePosCarte():
+	var pos0 = (hand_container.size.x - (Card.baseSize.x+Card.espacementEntreCarte)*len(player.hand))/2 #position de la première carte
+	for i in len(player.hand):
+		player.hand[i].setPos(Vector2(pos0+(Card.baseSize.x+Card.espacementEntreCarte)*i,0))
+		if i==len(player.hand)-1:
+			player.hand[i].nextCard = null
+		else:
+			player.hand[i].nextCard = player.hand[i+1]
+			
+		if i==0:
+			player.hand[i].beforeCard = null
+		else:
+			player.hand[i].beforeCard = player.hand[i-1]
 
 func initialize_game():
 	# Remplir les decks (exemple)
 	for i in range(30):
-		var card = Card.new(i, "Esisarien " + str(i), Card.CardType.ESISARIEN)
-		card.atk = randi() % 10 + 1
-		card.def = randi() % 10 + 1
+		var card = Card.new(randi() % 180)
 		player.deck.append(card)
 	
 	# Mélanger les decks
 	player.deck.shuffle()
 	
 	# Piocher 5 cartes
-	for i in 5:
+	for i in 3:
 		draw_card(player)
 
 func update_ui():
-	# Mise à jour des points de vie et de l’énergie
-	health_label.text = "PV : " + str(player.health)
-	energy_label.text = "Énergie : " + str(player.energy)
-	
-	# Mise à jour de la main
-	hand_container.get_children().all(func(child): child.queue_free()) # Supprime les anciennes cartes
-	for card in player.hand:
-		var card_ui = create_card_ui(card)
-		hand_container.add_child(card_ui)
-	
-	# Mise à jour des emplacements Esisarien
-	for i in range(5):
-		var slot = esisarien_slots.get_child(i)
-		if player.esisarien_field[i]:
-			slot.text = player.esisarien_field[i].name + " (" + str(player.esisarien_field[i].atk) + "/" + str(player.esisarien_field[i].def) + ")"
-		else:
-			slot.text = "Vide"
-	
-	# Mise à jour des emplacements Objet
-	for i in range(5):
-		var slot = object_slots.get_child(i)
-		if player.object_field[i]:
-			slot.text = player.object_field[i].name
-		else:
-			slot.text = "Vide"
+	updatePosCarte()
 
 # Fonction utilitaire pour créer une représentation visuelle d’une carte
 func create_card_ui(card: Card) -> Control:
@@ -75,7 +80,9 @@ func draw_card(p: Player):
 	if p.hand.size() < 8 and p.deck.size() > 0:
 		var card = p.deck.pop_back()
 		p.hand.append(card)
+		hand_container.add_child(card)
 		update_ui()
+
 
 func start_turn():
 	# Réinitialiser l'énergie
@@ -113,7 +120,7 @@ func resolve_combat(attacker: Card, defender: Card, attacking_player: Player, de
 				pass
 	
 	# Gestion de Perçant
-	if attacker.has_attribute(Card.EsisarienAttribute.PERCANT) and defender and defender.position == "defense":
+	if attacker.has_attribute(Card.EsisarienAttribute.PERCANT) and defender and defender.positionCombat == "defense":
 		if attacker.atk > defender.def:
 			defending_player.health -= attacker.atk - defender.def
 	
@@ -139,6 +146,10 @@ func activate_card(card: Card):
 		card.trigger_effect("activation", player, opponent)
 		player.graveyard.append(card)
 		player.hand.erase(card)
-	elif card.type == Card.CardType.ESISARIEN and card.position == "attack":
-		card.position = "defense"
+	elif card.type == Card.CardType.ESISARIEN and card.positionCombat == "attack":
+		card.positionCombat = "defense"
 		card.trigger_effect("activation", player, opponent)
+
+
+func _on_fin_du_tour_button_down() -> void:
+	draw_card(player)

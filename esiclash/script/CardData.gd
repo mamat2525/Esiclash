@@ -185,10 +185,3 @@ const card = {
 	180:{"name":"Porte", "type":Card.CardType.OBJET, "cout":2, "done":false, "file":"res://assets/cards/Objet (52).png", "estUnique":false},
 	
 }
-
-
-var test = func ok():
-	print("test")
-
-func _process(delta: float) -> void:
-	test.call()
