@@ -9,10 +9,10 @@ var is_first: bool
 # Références aux nœuds de l’interface utilisateur
 @onready var hand_container = $PlayerField/HandContainer  # HBoxContainer pour la main
 
-var object_esiSlotsAllie
-var object_esiSlotsEnnemi
-var object_objSlotsAllie
-var object_objSlotsEnnemi
+var object_esiSlotsAllie : Slots
+var object_esiSlotsEnnemi : Slots
+var object_objSlotsAllie : Slots
+var object_objSlotsEnnemi : Slots
 
 func _ready():
 	if is_first:
@@ -30,12 +30,12 @@ func _ready():
 	#update_ui()
 	#start_turn()
 	
-	for i in range(5):
+	for i in range(2):
 		object_esiSlotsAllie.placerCarte(Card.new((randi() % 70)+67), i)
 		object_esiSlotsEnnemi.placerCarte(Card.new((randi() % 70)+67), i)
 	
-	for i in range(5):
-		object_objSlotsAllie.placerCarte(Card.new((randi() % 42)+138),i)
+	for i in range(2):
+		#object_objSlotsAllie.placerCarte(Card.new((randi() % 42)+138),i)
 		object_objSlotsEnnemi.placerCarte(Card.new((randi() % 42)+138),i)
 	
 	
@@ -81,6 +81,7 @@ func draw_card(p: Player):
 		var card = p.deck.pop_back()
 		p.hand.append(card)
 		hand_container.add_child(card)
+		card.connect("carteCliquee", _on_cardInHand_clique)
 		update_ui()
 
 
@@ -97,14 +98,15 @@ func play_card(card: Card, slot: int):
 	rpc_id(opponent_id, "opponent_played_card", card.id, slot)
 	# Logique locale pour poser la carte
 
-@rpc("any_peer", "call_remote")
-func opponent_played_card(card_id: int, slot: int):
+#@rpc("any_peer", "call_remote")
+#func opponent_played_card(card_id: int, slot: int):
 	# Logique pour refléter l’action de l’adversaire
-	pass
+#	pass
 
-func summon_card(card: Card, slot: int, face_down: bool):
+func summon_card(card: Card, slot: int, face_down: bool = false):
+	print("carte:", card, " placé en :", slot, " retourné:", face_down)
 	if card.type == Card.CardType.ESISARIEN:
-		player.esisarien_field[slot] = card
+		object_esiSlotsAllie.slots[slot] = card
 		card.is_face_down = face_down
 		card.can_attack = card.has_attribute(Card.EsisarienAttribute.CHARGE) and not face_down
 		if not face_down:
@@ -153,3 +155,41 @@ func activate_card(card: Card):
 
 func _on_fin_du_tour_button_down() -> void:
 	draw_card(player)
+	
+var cardInHandSelectionner :Node = null
+	
+func _on_cardInHand_clique(card:Card, focusGagne : bool):
+	if focusGagne:
+		cardInHandSelectionner=card
+		clearHovelay()
+		if card.type == Card.CardType.ESISARIEN:
+			for i in range(5):
+				if object_esiSlotsAllie.slots[i] == null:
+					object_esiSlotsAllie.placerHoverlayDisponible(i, card)
+		elif card.type == Card.CardType.OBJET:
+			for i in range(5):
+				if object_esiSlotsAllie.slots[i] != null and object_objSlotsAllie.slots[i] == null:
+					object_objSlotsAllie.placerHoverlayDisponible(i, card)
+	elif card==cardInHandSelectionner:
+		cardInHandSelectionner = null
+		clearHovelay()
+
+func clearHovelay():
+	object_esiSlotsAllie.supprHoverlay()
+	object_esiSlotsEnnemi.supprHoverlay()
+	object_objSlotsAllie.supprHoverlay()
+	object_objSlotsEnnemi.supprHoverlay()
+
+
+func _on_card_placed(emplacement:int):
+	var card = cardInHandSelectionner #comprends pas pourquoi, mais ca marche : cardInHandSelectionner passe à null quand on le remove_child, mais la var test garde une référence
+	cardInHandSelectionner.get_parent().remove_child(cardInHandSelectionner)
+	
+	if card.type == Card.CardType.ESISARIEN:
+		object_esiSlotsAllie.placerCarte(card, emplacement)
+	elif card.type == Card.CardType.OBJET:
+		object_objSlotsAllie.placerCarte(card, emplacement)
+		
+	player.hand.erase(card)
+	card.disconnect("carteCliquee", _on_cardInHand_clique)
+	update_ui()

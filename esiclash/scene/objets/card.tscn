@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://bcmp1sukac6a3"]
+
+[ext_resource type="Script" uid="uid://dgpf88mvtacvc" path="res://script/Card.gd" id="1_7p64d"]
+
+[node name="Card" type="TextureButton"]
+offset_right = 140.0
+offset_bottom = 200.0
+ignore_texture_size = true
+stretch_mode = 0
+script = ExtResource("1_7p64d")
