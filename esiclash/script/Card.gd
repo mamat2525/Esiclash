@@ -87,7 +87,7 @@ func _process(delta: float) -> void:
 		agrandir()
 		timer.queue_free()
 	
-	if (hooverState == HooverState.GRANDIT or hooverState == HooverState.RETRECIT or	 (pushDir not in [PushDirection.GAUCHE, PushDirection.CENTRE, PushDirection.DROITE])):
+	if (hooverState == HooverState.GRANDIT or hooverState == HooverState.RETRECIT or (pushDir not in [PushDirection.GAUCHE, PushDirection.CENTRE, PushDirection.DROITE])):
 		actuPosition(delta)
 
 func actuPosition(delta):

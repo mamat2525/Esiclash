@@ -7,8 +7,7 @@ var objectSlot : Node
 var slots = [null, null, null, null, null]
 
 var type : Card.CardType
-enum JoueurType {ALLIE, ENNEMI}
-var joueur : JoueurType
+var joueur : Player.PlayerType
 
 var GameScene : Node
 

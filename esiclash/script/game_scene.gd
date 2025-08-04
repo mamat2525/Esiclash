@@ -2,41 +2,47 @@ extends Control
 
 var player: Player = Player.new()
 var opponent: Player = Player.new()
-var current_turn: int = 0 # 0 = joueur local, 1 = adversaire
+var current_turn: bool = false # 0 = joueur local, 1 = adversaire
 var opponent_id: int
 var is_first: bool
 #var card
 # Références aux nœuds de l’interface utilisateur
 @onready var hand_container = $PlayerField/HandContainer  # HBoxContainer pour la main
+@onready var endOfRoundLabel = $"PlayerField/BarreVieAllié/fin du tour/Label"
+@onready var opponentHand = $"PlayerField/opponentHand"
 
-var object_esiSlotsAllie : Slots
-var object_esiSlotsEnnemi : Slots
-var object_objSlotsAllie : Slots
-var object_objSlotsEnnemi : Slots
-
+#var object_esiSlotsAllie : Slots
+#var object_esiSlotsEnnemi : Slots
+#var object_objSlotsAllie : Slots
+#var object_objSlotsEnnemi : Slots
+	
 func _ready():
-	if is_first:
-		current_turn = 0
-	else:
-		current_turn = 1
+	player.init(Player.PlayerType.ALLIE, $PlayerField/EsisarienSlotsAllié, $PlayerField/ObjetSlotsAllié)
+	opponent.init(Player.PlayerType.ENNEMIE, $PlayerField/EsisarienSlotsEnnemi, $PlayerField/ObjetSlotsEnnemi)
 	
-	object_esiSlotsAllie = Slots.new($PlayerField/EsisarienSlotsAllié, Card.CardType.ESISARIEN, Slots.JoueurType.ALLIE)
-	object_esiSlotsEnnemi = Slots.new($PlayerField/EsisarienSlotsEnnemi, Card.CardType.ESISARIEN, Slots.JoueurType.ENNEMI)
-	object_objSlotsAllie = Slots.new($PlayerField/ObjetSlotsAllié, Card.CardType.OBJET, Slots.JoueurType.ALLIE)
-	object_objSlotsEnnemi = Slots.new($PlayerField/ObjetSlotsEnnemi, Card.CardType.OBJET, Slots.JoueurType.ENNEMI)
+	ServerHandeler.cardAddedInHandSignal.connect(draw_card)
+	ServerHandeler.ennemiPlacedCardSignal.connect(ennemiPlacedCard)
+	ServerHandeler.ennemiUpdateCardInHandSignal.connect(opponentHand.setCard)
+	ServerHandeler.startOfRoundSignal.connect(_on_start_of_round)
 	
 	
-	initialize_game()
+	#object_esiSlotsAllie = Slots.new($PlayerField/EsisarienSlotsAllié, Card.CardType.ESISARIEN, Slots.JoueurType.ALLIE)
+	#object_esiSlotsEnnemi = Slots.new($PlayerField/EsisarienSlotsEnnemi, Card.CardType.ESISARIEN, Slots.JoueurType.ENNEMI)
+	#object_objSlotsAllie = Slots.new($PlayerField/ObjetSlotsAllié, Card.CardType.OBJET, Slots.JoueurType.ALLIE)
+	#object_objSlotsEnnemi = Slots.new($PlayerField/ObjetSlotsEnnemi, Card.CardType.OBJET, Slots.JoueurType.ENNEMI)
+	
+	
+	#initialize_game()
 	#update_ui()
 	#start_turn()
 	
-	for i in range(2):
-		object_esiSlotsAllie.placerCarte(Card.new((randi() % 70)+67), i)
-		object_esiSlotsEnnemi.placerCarte(Card.new((randi() % 70)+67), i)
-	
-	for i in range(2):
-		#object_objSlotsAllie.placerCarte(Card.new((randi() % 42)+138),i)
-		object_objSlotsEnnemi.placerCarte(Card.new((randi() % 42)+138),i)
+	#for i in range(2):
+		#player.esisarien_slots.placerCarte(Card.new((randi() % 70)+67), i)
+		#opponent.esisarien_slots.placerCarte(Card.new((randi() % 70)+67), i)
+	#
+	#for i in range(2):
+		#player.object_slots.placerCarte(Card.new((randi() % 42)+138),i)
+		#opponent.object_slots.placerCarte(Card.new((randi() % 42)+138),i)
 	
 	
 func updatePosCarte():
@@ -53,45 +59,49 @@ func updatePosCarte():
 		else:
 			player.hand[i].beforeCard = player.hand[i-1]
 
-func initialize_game():
-	# Remplir les decks (exemple)
-	for i in range(30):
-		var card = Card.new(randi() % 180)
-		player.deck.append(card)
+#func initialize_game():
+	## Remplir les decks (exemple)
+	#for i in range(30):
+		#var card = Card.new(randi() % 180)
+		#player.deck.append(card)
+	#
+	## Mélanger les decks
+	#player.deck.shuffle()
+	#
+	## Piocher 5 cartes
+	#for i in 3:
+		#draw_card(player)
+
+func ennemiPlacedCard(cardId : int, slot : int, emplacement : int):
+	var card = Card.new(cardId)
+	if slot == 0:
+		opponent.object_slots.placerCarte(card, emplacement)
+	elif slot == 1:
+		opponent.esisarien_slots.placerCarte(card, emplacement)
+	else:
+		push_error("impossible de placer la carte ennemi dans le slot : ", slot, " : ce slot ne correspond à rien")
+		return
 	
-	# Mélanger les decks
-	player.deck.shuffle()
-	
-	# Piocher 5 cartes
-	for i in 3:
-		draw_card(player)
 
 func update_ui():
 	updatePosCarte()
 
-# Fonction utilitaire pour créer une représentation visuelle d’une carte
-func create_card_ui(card: Card) -> Control:
-	var card_ui = Button.new() # Ou autre nœud selon vos besoins (ex: TextureRect)
-	card_ui.text = card.name + " (" + str(card.atk) + "/" + str(card.def) + ")"
-	card_ui.custom_minimum_size = Vector2(10, 10) # Taille minimale pour la carte
-	return card_ui
-
-func draw_card(p: Player):
-	if p.hand.size() < 8 and p.deck.size() > 0:
-		var card = p.deck.pop_back()
-		p.hand.append(card)
-		hand_container.add_child(card)
-		card.connect("carteCliquee", _on_cardInHand_clique)
-		update_ui()
+func draw_card(cardId:int):
+	print("draw card : ", cardId)
+	var card = Card.new(cardId)
+	player.hand.append(card)
+	hand_container.add_child(card)
+	card.connect("carteCliquee", _on_cardInHand_clique)
+	update_ui()
 
 
 func start_turn():
 	# Réinitialiser l'énergie
-	if current_turn == 0:
+	if current_turn:
 		player.energy = 10
 	else: opponent.energy = 10
 	# Piocher une carte
-	draw_card(player if current_turn == 0 else opponent)
+	#draw_card(player if current_turn == 0 else opponent)
 
 # Synchronisation des actions avec l’adversaire via RPC
 func play_card(card: Card, slot: int):
@@ -106,7 +116,7 @@ func play_card(card: Card, slot: int):
 func summon_card(card: Card, slot: int, face_down: bool = false):
 	print("carte:", card, " placé en :", slot, " retourné:", face_down)
 	if card.type == Card.CardType.ESISARIEN:
-		object_esiSlotsAllie.slots[slot] = card
+		#object_esiSlotsAllie.slots[slot] = card
 		card.is_face_down = face_down
 		card.can_attack = card.has_attribute(Card.EsisarienAttribute.CHARGE) and not face_down
 		if not face_down:
@@ -139,7 +149,7 @@ func activate_card(card: Card):
 		if card.action_type == Card.ActionType.RAPIDE:
 			# Peut être joué pendant le tour adverse
 			pass
-		elif card.action_type == Card.ActionType.LOURDE and current_turn == 0:
+		elif card.action_type == Card.ActionType.LOURDE and current_turn:
 			# Uniquement pendant notre tour
 			pass
 		elif card.action_type == Card.ActionType.CONTRE:
@@ -152,33 +162,34 @@ func activate_card(card: Card):
 		card.positionCombat = "defense"
 		card.trigger_effect("activation", player, opponent)
 
-
 func _on_fin_du_tour_button_down() -> void:
-	draw_card(player)
-	
+	if current_turn:
+		ServerHandeler.rpc("endOfRound", ServerHandeler.serveur.get_unique_id())
+		endOfRoundLabel.set_text("tour de\nl'adversaire")
+
 var cardInHandSelectionner :Node = null
 	
 func _on_cardInHand_clique(card:Card, focusGagne : bool):
-	if focusGagne:
+	if focusGagne and current_turn:
 		cardInHandSelectionner=card
 		clearHovelay()
 		if card.type == Card.CardType.ESISARIEN:
 			for i in range(5):
-				if object_esiSlotsAllie.slots[i] == null:
-					object_esiSlotsAllie.placerHoverlayDisponible(i, card)
+				if player.esisarien_slots.slots[i] == null:
+					player.esisarien_slots.placerHoverlayDisponible(i, card)
 		elif card.type == Card.CardType.OBJET:
 			for i in range(5):
-				if object_esiSlotsAllie.slots[i] != null and object_objSlotsAllie.slots[i] == null:
-					object_objSlotsAllie.placerHoverlayDisponible(i, card)
+				if player.esisarien_slots.slots[i] != null and player.object_slots.slots[i] == null:
+					player.object_slots.placerHoverlayDisponible(i, card)
 	elif card==cardInHandSelectionner:
 		cardInHandSelectionner = null
 		clearHovelay()
 
 func clearHovelay():
-	object_esiSlotsAllie.supprHoverlay()
-	object_esiSlotsEnnemi.supprHoverlay()
-	object_objSlotsAllie.supprHoverlay()
-	object_objSlotsEnnemi.supprHoverlay()
+	player.object_slots.supprHoverlay()
+	player.esisarien_slots.supprHoverlay()
+	opponent.object_slots.supprHoverlay()
+	opponent.esisarien_slots.supprHoverlay()
 
 
 func _on_card_placed(emplacement:int):
@@ -186,10 +197,14 @@ func _on_card_placed(emplacement:int):
 	cardInHandSelectionner.get_parent().remove_child(cardInHandSelectionner)
 	
 	if card.type == Card.CardType.ESISARIEN:
-		object_esiSlotsAllie.placerCarte(card, emplacement)
+		player.esisarien_slots.placerCarte(card, emplacement)
 	elif card.type == Card.CardType.OBJET:
-		object_objSlotsAllie.placerCarte(card, emplacement)
+		player.object_slots.placerCarte(card, emplacement)
 		
 	player.hand.erase(card)
 	card.disconnect("carteCliquee", _on_cardInHand_clique)
 	update_ui()
+
+func _on_start_of_round():
+	current_turn = true
+	endOfRoundLabel.set_text("Fin du\ntour")

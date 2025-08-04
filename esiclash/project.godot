@@ -15,12 +15,21 @@ run/main_scene="uid://rmfwfc4urtwa"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+ServerHandeler="*res://script/Multiplayer/server_handeler.gd"
+
 [display]
 
 window/size/viewport_width=1600
 window/size/viewport_height=900
 
+[editor]
+
+run/main_run_args="client"
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+2d/snap/snap_2d_transforms_to_pixel=true

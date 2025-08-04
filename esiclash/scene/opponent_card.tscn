@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://11ibgc4dlcku"]
+
+[ext_resource type="Texture2D" uid="uid://vu2tfyaor0sd" path="res://assets/cards/Dos.png" id="1_kot0q"]
+
+[node name="opponentCard" type="TextureRect"]
+offset_left = -70.0
+offset_top = -100.0
+offset_right = 70.0
+offset_bottom = 100.0
+texture = ExtResource("1_kot0q")
+expand_mode = 1

@@ -1,0 +1,51 @@
+[gd_scene load_steps=4 format=3 uid="uid://dr72q0tvvgo2e"]
+
+[ext_resource type="Script" uid="uid://dlyivfmtmk2ux" path="res://script/waiting_scene.gd" id="1_0j3cg"]
+[ext_resource type="Texture2D" uid="uid://j2eey3g5ylmw" path="res://assets/waitingAsset.png" id="2_4eei6"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_0j3cg"]
+font_size = 76
+
+[node name="waitingScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 25.0
+offset_right = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0j3cg")
+
+[node name="Container" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_top = -0.5
+offset_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="WaitingAsset" type="Sprite2D" parent="Container"]
+texture = ExtResource("2_4eei6")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.764
+anchor_right = 0.5
+anchor_bottom = 0.764
+offset_left = -823.0
+offset_top = -52.6
+offset_right = 776.0
+offset_bottom = 52.4
+grow_horizontal = 2
+grow_vertical = 0
+text = "Déconnecter"
+label_settings = SubResource("LabelSettings_0j3cg")
+horizontal_alignment = 1
+vertical_alignment = 1

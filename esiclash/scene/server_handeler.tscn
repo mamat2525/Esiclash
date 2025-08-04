@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c2gomqhhfl2uc"]
+
+[ext_resource type="Script" uid="uid://cgv4kpn781l63" path="res://script/Multiplayer/server_handeler.gd" id="1_q3lms"]
+
+[node name="serverHandeler" type="Node"]
+script = ExtResource("1_q3lms")
