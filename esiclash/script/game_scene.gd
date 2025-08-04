@@ -29,6 +29,7 @@ func initialize_game():
 		card.atk = randi() % 10 + 1
 		card.def = randi() % 10 + 1
 		player.deck.append(card)
+		
 	
 	# Mélanger les decks
 	player.deck.shuffle()
