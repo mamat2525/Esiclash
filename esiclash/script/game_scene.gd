@@ -2,7 +2,7 @@ extends Control
 
 var player: Player = Player.new()
 var opponent: Player = Player.new()
-var current_turn: bool = false # 0 = joueur local, 1 = adversaire
+var current_turn: bool = true
 var opponent_id: int
 var is_first: bool
 #var card
@@ -20,11 +20,10 @@ func _ready():
 	player.init(Player.PlayerType.ALLIE, $PlayerField/EsisarienSlotsAllié, $PlayerField/ObjetSlotsAllié)
 	opponent.init(Player.PlayerType.ENNEMIE, $PlayerField/EsisarienSlotsEnnemi, $PlayerField/ObjetSlotsEnnemi)
 	
-	ServerHandeler.cardAddedInHandSignal.connect(draw_card)
-	ServerHandeler.ennemiPlacedCardSignal.connect(ennemiPlacedCard)
-	ServerHandeler.ennemiUpdateCardInHandSignal.connect(opponentHand.setCard)
-	ServerHandeler.startOfRoundSignal.connect(_on_start_of_round)
-	
+	#ServerHandeler.cardAddedInHandSignal.connect(draw_card)
+	#ServerHandeler.ennemiPlacedCardSignal.connect(ennemiPlacedCard)
+	#ServerHandeler.ennemiUpdateCardInHandSignal.connect(opponentHand.setCard)
+	#ServerHandeler.startOfRoundSignal.connect(_on_start_of_round)
 	
 	#object_esiSlotsAllie = Slots.new($PlayerField/EsisarienSlotsAllié, Card.CardType.ESISARIEN, Slots.JoueurType.ALLIE)
 	#object_esiSlotsEnnemi = Slots.new($PlayerField/EsisarienSlotsEnnemi, Card.CardType.ESISARIEN, Slots.JoueurType.ENNEMI)
@@ -44,6 +43,22 @@ func _ready():
 		#player.object_slots.placerCarte(Card.new((randi() % 42)+138),i)
 		#opponent.object_slots.placerCarte(Card.new((randi() % 42)+138),i)
 	
+func _process(_delta: float) -> void:
+	for message in ServerHandeler.getNewMessage():
+		match message[0]:
+			"drawCard":
+				draw_card(int(message[1]))
+			"enemieUpdateCardInHand":
+				opponentHand.setCard(int(message[1]))
+			"startTurn":
+				_on_start_of_round()
+			"endTurn":
+				_on_endOfTurn()
+			"ennemiePlacedCard":
+				ennemiPlacedCard(int(message[1]), int(message[2]), int(message[3]))
+			_ :
+				print_debug("message inconnu : ", message)
+		
 	
 func updatePosCarte():
 	var pos0 = (hand_container.size.x - (Card.baseSize.x+Card.espacementEntreCarte)*len(player.hand))/2 #position de la première carte
@@ -75,9 +90,9 @@ func updatePosCarte():
 func ennemiPlacedCard(cardId : int, slot : int, emplacement : int):
 	var card = Card.new(cardId)
 	if slot == 0:
-		opponent.object_slots.placerCarte(card, emplacement)
-	elif slot == 1:
 		opponent.esisarien_slots.placerCarte(card, emplacement)
+	elif slot == 1:
+		opponent.object_slots.placerCarte(card, emplacement)
 	else:
 		push_error("impossible de placer la carte ennemi dans le slot : ", slot, " : ce slot ne correspond à rien")
 		return
@@ -87,7 +102,6 @@ func update_ui():
 	updatePosCarte()
 
 func draw_card(cardId:int):
-	print("draw card : ", cardId)
 	var card = Card.new(cardId)
 	player.hand.append(card)
 	hand_container.add_child(card)
@@ -103,9 +117,9 @@ func start_turn():
 	# Piocher une carte
 	#draw_card(player if current_turn == 0 else opponent)
 
-# Synchronisation des actions avec l’adversaire via RPC
-func play_card(card: Card, slot: int):
-	rpc_id(opponent_id, "opponent_played_card", card.id, slot)
+## Synchronisation des actions avec l’adversaire via RPC
+#func play_card(card: Card, slot: int):
+	#rpc_id(opponent_id, "opponent_played_card", card.id, slot)
 	# Logique locale pour poser la carte
 
 #@rpc("any_peer", "call_remote")
@@ -164,8 +178,12 @@ func activate_card(card: Card):
 
 func _on_fin_du_tour_button_down() -> void:
 	if current_turn:
-		ServerHandeler.rpc("endOfRound", ServerHandeler.serveur.get_unique_id())
-		endOfRoundLabel.set_text("tour de\nl'adversaire")
+		ServerHandeler.client.put_utf8_string("endOfTurn")
+		_on_endOfTurn()
+		
+func _on_endOfTurn():
+	endOfRoundLabel.set_text("Tour de\nl'adversaire")
+	current_turn = false
 
 var cardInHandSelectionner :Node = null
 	
@@ -197,8 +215,10 @@ func _on_card_placed(emplacement:int):
 	cardInHandSelectionner.get_parent().remove_child(cardInHandSelectionner)
 	
 	if card.type == Card.CardType.ESISARIEN:
+		ServerHandeler.client.put_utf8_string("placedCard:{0}:0:{1}".format([str(player.hand.find(card)), str(emplacement)]))
 		player.esisarien_slots.placerCarte(card, emplacement)
 	elif card.type == Card.CardType.OBJET:
+		ServerHandeler.client.put_utf8_string("placedCard:{0}:1:{1}".format([str(player.hand.find(card)), str(emplacement)]))
 		player.object_slots.placerCarte(card, emplacement)
 		
 	player.hand.erase(card)

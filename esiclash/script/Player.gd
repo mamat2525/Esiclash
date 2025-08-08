@@ -15,7 +15,7 @@ var objet: Array = [null, null, null, null, null]
 var esisarien_slots: Slots
 var object_slots: Slots
 var prof_card: Card = null
-var playerId : int
+var client : Client
 
 func init(playerType : PlayerType, EsisarienSlots : Node, ObjetSlots : Node):
 	esisarien_slots = Slots.new(EsisarienSlots, Card.CardType.ESISARIEN, playerType)
