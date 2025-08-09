@@ -1,5 +1,4 @@
 class_name CardData
-extends Node
 
 const card = {
 	0:{"name":"CharroudFullArt", "type":Card.CardType.PROF, "done":false, "file":"res://assets/cards/Prof.png", "estUnique":true},

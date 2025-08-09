@@ -16,7 +16,7 @@ func setCard(nb : int):
 	actuPos()
 	
 func actuPos():
-	var offset = (self.get_size().x-(nbActuelle)*Card.baseSize.x/2)/2
+	var offset = (self.get_size().x-(nbActuelle)*CardUi.baseSize.x/2)/2
 	for nb in range(nbActuelle):
-		listChild[nb].set_position(Vector2(offset+Card.baseSize.x/2*(nb-1), 0))
+		listChild[nb].set_position(Vector2(offset+CardUi.baseSize.x/2*(nb-1), 0))
 		

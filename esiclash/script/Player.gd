@@ -15,8 +15,8 @@ var objet: Array = [null, null, null, null, null]
 var esisarien_slots: Slots
 var object_slots: Slots
 var prof_card: Card = null
-var client : Client
+var peer : StreamPeerTCP
 
-func init(playerType : PlayerType, EsisarienSlots : Node, ObjetSlots : Node):
-	esisarien_slots = Slots.new(EsisarienSlots, Card.CardType.ESISARIEN, playerType)
-	object_slots = Slots.new(ObjetSlots, Card.CardType.OBJET, playerType)
+func init(playerType : PlayerType, EsisarienSlots : Node, ObjetSlots : Node, handContaineur : Node):
+	esisarien_slots = Slots.new(EsisarienSlots, Card.CardType.ESISARIEN, playerType, handContaineur)
+	object_slots = Slots.new(ObjetSlots, Card.CardType.OBJET, playerType, handContaineur)

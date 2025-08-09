@@ -1,16 +1,10 @@
-# Card.gd
-class_name Card
+class_name CardUi
 extends TextureButton
 
 const baseSize = Vector2(140,200)
 var basePos = Vector2(0,0)
 
 const espacementEntreCarte = 5
-
-enum CardType { ESISARIEN, OBJET, ACTION, PROF }
-enum EsisarienAttribute { CHARGE, PERCANT, RAGE, SNIPER, INVULNERABLE, INTANGIBLE }
-enum ActionType { RAPIDE, LOURDE, CONTRE }
-enum ObjectType { CONTINU, EQUIPEMENT }
 
 enum HooverState {PETIT, GRANDIT, GRAND, RETRECIT}
 var hooverState : HooverState = HooverState.PETIT
@@ -29,50 +23,19 @@ var pushPos : float = 0
 var beforeCard = null
 var nextCard = null
 
-var id: int                # Identifiant unique
-var card_name: String           # Nom de la carte
-var type: CardType         # Type principal
-var is_unique: bool = false # Carte unique ou commune
-var coutBase : int
-var baseAtk : int
-var baseDef : int
-
 signal carteCliquee(card : Card, focusGagner : bool)
 var selectionner : bool = false
-# Propriétés spécifiques à Esisarien
-var atk: int = 0
-var def: int = 0
-var attributes: Array = [] # Liste d'attributs (ex: [CHARGE, PERCANT])
-var effect_text: String = ""    # Description de l'effet (ex: "Dernier Souffle: pioche 1 carte")
-var effects: Array = [] # Liste d'effets sous forme de tableau
-var is_face_down: bool = false
-var positionCombat: String = "attack" # "attack" ou "defense"
-var can_attack: bool = false
 
-# Propriétés spécifiques à Objet
-var object_type: ObjectType
-
-# Propriétés spécifiques à Action
-var action_type: ActionType
+#info relative à la carte. Remplacer tout ca, si ca devient redondant, par une var card : Card qui retient tout
+var type: Card.CardType
 
 func _init(idCarte:int=0):
 	var card = CardData.card[idCarte]
-	id = idCarte
-	name = card["name"]
-	type = card["type"]
-	if type != CardType.PROF:
-		coutBase = card["cout"]
-		
-	if type == CardType.ESISARIEN:
-		baseAtk = card["atk"]
-		baseDef = card["def"]
 	self.set_texture_normal(load(card["file"]))
+	type = card["type"]
 	
 	self.set_ignore_texture_size(true)
 	self.set_stretch_mode(TextureButton.STRETCH_SCALE)
-	#self.set_expand_mode(TextureRect.EXPAND_IGNORE_SIZE)
-	#self.set_expand_mode(TextureRect.EXPAND_IGNORE_SIZE)
-	#self.set_stretch_mode(TextureRect.STRETCH_SCALE)
 	
 	self.set_position(basePos)
 	self.set_size(baseSize)

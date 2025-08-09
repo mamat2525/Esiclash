@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dm4xf70156tbg"]
 
 [ext_resource type="Texture2D" uid="uid://c46wnqasy61e7" path="res://assets/test foncage.png" id="1_jdv7j"]
-[ext_resource type="Script" uid="uid://bawr8s48f3k0w" path="res://script/hoverlay_place_possible.gd" id="2_mngjm"]
+[ext_resource type="Script" uid="uid://bawr8s48f3k0w" path="res://script/UI/hoverlay_place_possible.gd" id="2_mngjm"]
 
 [node name="hoverlayPlacePossible" type="TextureButton"]
 offset_left = -80.0
