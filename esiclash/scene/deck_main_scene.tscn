@@ -5,17 +5,17 @@
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_nfh05")
 
-[node name="Deck_container" type="VBoxContainer" parent="."]
+[node name="Deck_container" type="GridContainer" parent="."]
 offset_left = 64.0
 offset_top = 36.0
-offset_right = 586.0
-offset_bottom = 459.0
+offset_right = 883.0
+offset_bottom = 573.0
 
 [node name="Button_new_deck" type="Button" parent="."]
-offset_left = 764.0
-offset_top = 203.0
-offset_right = 869.0
-offset_bottom = 261.0
+offset_left = 983.0
+offset_top = 388.0
+offset_right = 1088.0
+offset_bottom = 446.0
 text = "New Deck"
 
 [node name="SelectedDeck" type="Label" parent="."]
@@ -23,7 +23,7 @@ offset_right = 40.0
 offset_bottom = 23.0
 
 [node name="LineEdit" type="LineEdit" parent="."]
-offset_left = 737.0
-offset_top = 167.0
-offset_right = 918.0
-offset_bottom = 198.0
+offset_left = 945.0
+offset_top = 342.0
+offset_right = 1126.0
+offset_bottom = 373.0
