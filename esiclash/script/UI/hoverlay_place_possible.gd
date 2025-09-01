@@ -4,9 +4,15 @@ signal cardPlaced(emplacement:int)
 
 var emplacement : int
 
-func set_card(card:TextureButton, emplacement_ : int):
+var vide : bool = true
+
+func set_card(card : Node, emplacement_ : int):
 	self.emplacement=emplacement_
-	$"cardPreview".set_texture(card.get_texture_normal())
+	if card != null:
+		$"cardPreview".set_texture(card.get_child(0).get_texture())
+		vide = false
+	else:
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
 	$"cardPreview".hide()
 
 func _on_mouse_entered() -> void:
@@ -17,4 +23,5 @@ func _on_mouse_exited() -> void:
 
 
 func _on_button_down() -> void:
-	cardPlaced.emit(emplacement)
+	if !vide:
+		cardPlaced.emit(emplacement)

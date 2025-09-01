@@ -19,9 +19,9 @@ var waitingListe : Array = []
 func _ready():
 	var err = server.listen(port)
 	if err != OK:
-		print("Erreur lors du démarrage du serveur :", err)
+		print("[serveur] Erreur lors du démarrage du serveur :", err)
 		return
-	print("Serveur en écoute sur le port ", port)
+	print("[serveur] Serveur en écoute sur le port ", port)
 	get_tree().root.remove_child(ServerHandeler)
 
 func _process(_delta):
@@ -29,7 +29,7 @@ func _process(_delta):
 	if server.is_connection_available():
 		var new_client = Client.new(server.take_connection())
 		clients.append(new_client)
-		print("Nouveau client connecté :", new_client)
+		print("[serveur] Nouveau client connecté :", new_client)
 
 	# Gérer chaque client
 	var disconnectedClient = [] 
@@ -38,7 +38,7 @@ func _process(_delta):
 
 		# Vérifier l'état de connexion
 		if client.peer.get_status() != StreamPeerTCP.STATUS_CONNECTED:
-			print("Client déconnecté : ", client.peer)
+			print("[serveur] Client déconnecté : ", client.peer)
 			disconnectedClient.append(client) # on ne peut pas faire clients.erase(client) dans le for, on le traite après
 			
 			#TODO : prendre en compte si le joueur est dans une room (faire un timer pour lui laisser le temps de revenir ?)

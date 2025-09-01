@@ -19,12 +19,12 @@ func _init(objectSlot_, type_, joueur_, handContaineur_):
 	handContaineur = handContaineur_
 	GameScene=objectSlot.get_parent().get_parent()
 	
-func placerCarte(carte : CardUi, emplacement : int):
+func placerCarte(carte : Node, emplacement : int):
 	if slots[emplacement] != null:
 		push_error("impossible de placer cette carte : l'emplacement n'est pas vide")
 		return
-	if carte.type != type:
-		push_error("impossible de placer cette carte : la carte n'est pas du même type que le conteneur")
+	if carte.card != null and carte.type != type:
+		push_error("impossible de placer cette carte : la carte n'est pas du même type que le conteneur: typeCard : {0}; typeSlot : {1}".format([str(carte.type), str(type)]))
 		return
 	if emplacement > 4 || emplacement < 0:
 		push_error("impossible de placer cette carte : l'emplacement n'est pas valide")
@@ -35,19 +35,18 @@ func placerCarte(carte : CardUi, emplacement : int):
 	
 	slots[emplacement] = carte
 	objectSlot.add_child(carte)
-	carte.setPos(Vector2((CardUi.baseSize.x+espacementEntreCarte)*emplacement, 0))
-	carte.hooverMode = CardUi.HooverMode.CENTRER
+	
+	carte.cartePlaced(Vector2((CardUi.baseSize.x+espacementEntreCarte)*emplacement, 0), emplacement, joueur == Player.PlayerType.ENNEMIE)
 
 var hoverlayList = []
 
-func placerHoverlayDisponible(emplacement:int, card:TextureButton):
+func placerHoverlayDisponible(emplacement:int, card=null):
 	var hoverlay = load("res://scene/objets/hoverlay_place_possible.tscn").instantiate()
 	hoverlay.set_card(card, emplacement)
 	hoverlay.set_position(Vector2((CardUi.baseSize.x+espacementEntreCarte)*emplacement-10,-10))
 	objectSlot.add_child(hoverlay)
 	hoverlayList.append(hoverlay)
 	hoverlay.connect("cardPlaced", handContaineur._on_card_placed)
-	
 
 func supprHoverlay():
 	for obj in hoverlayList:

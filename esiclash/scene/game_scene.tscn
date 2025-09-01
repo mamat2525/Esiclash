@@ -1,11 +1,13 @@
-[gd_scene load_steps=7 format=3 uid="uid://ds3ttk1mmil4n"]
+[gd_scene load_steps=9 format=3 uid="uid://ds3ttk1mmil4n"]
 
 [ext_resource type="Script" uid="uid://jl3rvo1uecad" path="res://script/game_scene.gd" id="1_gitng"]
 [ext_resource type="Texture2D" uid="uid://bc1dqt2kfmson" path="res://assets/cards/Prof.png" id="2_sl1kl"]
 [ext_resource type="Script" uid="uid://bjiea0l01aegc" path="res://script/UI/hand_container.gd" id="3_0in77"]
 [ext_resource type="Texture2D" uid="uid://behy3ap8nx35" path="res://assets/barre de vie circulaire.png" id="3_8rpq6"]
+[ext_resource type="Script" uid="uid://dkpeslrr25ti5" path="res://script/UI/graveyard.gd" id="3_juocg"]
 [ext_resource type="Texture2D" uid="uid://bwxs61sg4e446" path="res://assets/intérieur barre circulaire.png" id="4_xt7w2"]
 [ext_resource type="Script" uid="uid://dtnukjg1wwm50" path="res://script/UI/opponent_hand.gd" id="5_volm0"]
+[ext_resource type="Script" uid="uid://djlbu8w4n1frc" path="res://script/UI/barre_vie.gd" id="6_f3g3v"]
 
 [node name="GameScene" type="Control"]
 layout_mode = 3
@@ -48,12 +50,28 @@ offset_right = 240.0
 offset_bottom = 116.0
 
 [node name="Graveyard" type="Control" parent="PlayerField"]
-layout_mode = 3
-anchors_preset = 0
-offset_left = 821.0
-offset_top = 478.0
-offset_right = 861.0
-offset_bottom = 518.0
+layout_mode = 1
+anchor_left = 0.892
+anchor_top = 0.833
+anchor_right = 0.892
+anchor_bottom = 0.833
+offset_left = -69.2001
+offset_top = -99.7001
+offset_right = 70.7999
+offset_bottom = 100.3
+script = ExtResource("3_juocg")
+
+[node name="ennemiGraveyard" type="Control" parent="PlayerField"]
+layout_mode = 1
+anchor_left = 0.079
+anchor_top = 0.331
+anchor_right = 0.079
+anchor_bottom = 0.331
+offset_left = -70.4
+offset_top = -99.9
+offset_right = 69.6
+offset_bottom = 100.1
+script = ExtResource("3_juocg")
 
 [node name="HandContainer" type="Control" parent="PlayerField"]
 z_index = 1
@@ -90,14 +108,14 @@ offset_bottom = 77.0
 [node name="ProfEnnemi" type="TextureRect" parent="PlayerField"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.855
-anchor_top = 0.261
-anchor_right = 0.855
-anchor_bottom = 0.261
-offset_left = -70.0
-offset_top = -99.9
-offset_right = 70.0
-offset_bottom = 100.1
+anchor_left = 0.891
+anchor_top = 0.24
+anchor_right = 0.891
+anchor_bottom = 0.24
+offset_left = -70.6001
+offset_top = -100.0
+offset_right = 69.3999
+offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_sl1kl")
@@ -106,14 +124,14 @@ expand_mode = 1
 [node name="ProfAllié" type="TextureRect" parent="PlayerField"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.174
-anchor_top = 0.576
-anchor_right = 0.174
-anchor_bottom = 0.576
-offset_left = -70.4
-offset_top = -100.4
-offset_right = 69.6
-offset_bottom = 99.6
+anchor_left = 0.082
+anchor_top = 0.552
+anchor_right = 0.082
+anchor_bottom = 0.552
+offset_left = -69.2
+offset_top = -99.8
+offset_right = 70.8
+offset_bottom = 100.2
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_sl1kl")
@@ -205,21 +223,24 @@ color = Color(1, 0, 0, 1)
 [node name="BarreVieAllié" type="TextureProgressBar" parent="PlayerField"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.861
-anchor_top = 0.589
-anchor_right = 0.861
-anchor_bottom = 0.589
-offset_left = -100.6
-offset_top = -100.1
-offset_right = 99.3999
-offset_bottom = 99.9
+anchor_left = 0.894
+anchor_top = 0.578
+anchor_right = 0.894
+anchor_bottom = 0.578
+offset_left = -100.4
+offset_top = -100.2
+offset_right = 99.5997
+offset_bottom = 99.8
 max_value = 10.0
 value = 10.0
 fill_mode = 4
 radial_initial_angle = 225.0
 radial_fill_degrees = 270.0
+texture_under = ExtResource("3_8rpq6")
 texture_progress = ExtResource("3_8rpq6")
-tint_progress = Color(1, 0, 0.172549, 1)
+tint_under = Color(0.862745, 0.286275, 0, 1)
+tint_progress = Color(1, 0.12549, 0.117647, 1)
+script = ExtResource("6_f3g3v")
 
 [node name="BarreManaAllié" type="TextureProgressBar" parent="PlayerField/BarreVieAllié"]
 layout_mode = 1
@@ -271,21 +292,23 @@ vertical_alignment = 1
 [node name="BarreVieEnnemi" type="TextureProgressBar" parent="PlayerField"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.165
-anchor_top = 0.26
-anchor_right = 0.165
-anchor_bottom = 0.26
-offset_left = -100.0
-offset_top = -100.0
-offset_right = 100.0
-offset_bottom = 100.0
+anchor_left = 0.081
+anchor_top = 0.137
+anchor_right = 0.081
+anchor_bottom = 0.137
+offset_left = -100.6
+offset_top = -100.3
+offset_right = 99.4
+offset_bottom = 99.7
 max_value = 10.0
 value = 10.0
 fill_mode = 4
 radial_initial_angle = 225.0
 radial_fill_degrees = 270.0
+texture_under = ExtResource("3_8rpq6")
 texture_progress = ExtResource("3_8rpq6")
 tint_progress = Color(1, 0, 0.172549, 1)
+script = ExtResource("6_f3g3v")
 
 [node name="BarreManaEnnemi" type="TextureProgressBar" parent="PlayerField/BarreVieEnnemi"]
 layout_mode = 0

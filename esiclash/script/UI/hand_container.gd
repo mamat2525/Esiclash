@@ -1,6 +1,7 @@
 extends Control
 
 @onready var game_scene = $"/root/GameScene"
+var cardPreload = preload("res://scene/objets/card.tscn")
 
 func updatePosCarte():
 	var pos0 = (size.x - (CardUi.baseSize.x+CardUi.espacementEntreCarte)*len(game_scene.player.hand))/2 #position de la première carte
@@ -18,7 +19,8 @@ func updatePosCarte():
 
 
 func draw_card(cardId:int):
-	var card = CardUi.new(cardId)
+	var card = cardPreload.instantiate()
+	card.set_card(cardId)
 	game_scene.player.hand.append(card)
 	add_child(card)
 	card.connect("carteCliquee", _on_cardInHand_clique)
@@ -27,7 +29,7 @@ func draw_card(cardId:int):
 	
 var cardInHandSelectionner : Node = null
 
-func _on_cardInHand_clique(card:CardUi, focusGagne : bool):
+func _on_cardInHand_clique(card, focusGagne : bool):
 	if focusGagne and game_scene.current_turn:
 		cardInHandSelectionner=card
 		game_scene.clearHovelay()
@@ -37,7 +39,7 @@ func _on_cardInHand_clique(card:CardUi, focusGagne : bool):
 					game_scene.player.esisarien_slots.placerHoverlayDisponible(i, card)
 		elif card.type == Card.CardType.OBJET:
 			for i in range(5):
-				if game_scene.player.esisarien_slots.slots[i] != null and game_scene.player.object_slots.slots[i] == null:
+				if game_scene.player.esisarien_slots.slots[i] != null and game_scene.player.esisarien_slots.slots[i].reveler and game_scene.player.object_slots.slots[i] == null:
 					game_scene.player.object_slots.placerHoverlayDisponible(i, card)
 	elif card==cardInHandSelectionner:
 		cardInHandSelectionner = null

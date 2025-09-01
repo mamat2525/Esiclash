@@ -31,6 +31,7 @@ offset_right = 70.0
 offset_bottom = 100.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 expand_mode = 1
 
 [connection signal="button_down" from="." to="." method="_on_button_down"]

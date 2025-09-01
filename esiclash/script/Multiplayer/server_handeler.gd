@@ -9,7 +9,6 @@ var port := 4242
 
 var incomingMessage : Array = []
 var isNewMessage = false
-const messageDelimiter = ':'
 
 func _ready():
 	try_connect()
@@ -44,7 +43,7 @@ func _process(delta):
 			if client.get_available_bytes() > 0:
 				isNewMessage = true
 				var message = client.get_utf8_string()
-				incomingMessage.append(message.split(messageDelimiter))
+				incomingMessage.append(message.split(':'))
 
 
 func getNewMessage():

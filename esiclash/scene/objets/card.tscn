@@ -1,10 +1,116 @@
-[gd_scene load_steps=2 format=3 uid="uid://bcmp1sukac6a3"]
+[gd_scene load_steps=10 format=3 uid="uid://bcmp1sukac6a3"]
 
-[ext_resource type="Script" uid="uid://dgpf88mvtacvc" path="res://script/GameScript/Card.gd" id="1_7p64d"]
+[ext_resource type="Script" uid="uid://bd4qw70blowgx" path="res://script/UI/CardUi.gd" id="1_ap3n8"]
+[ext_resource type="Texture2D" uid="uid://vu2tfyaor0sd" path="res://assets/cards/Dos.png" id="2_6vs7i"]
+[ext_resource type="Script" uid="uid://dvtijq5rvoiqw" path="res://script/UI/card_menu.gd" id="3_ap3n8"]
+[ext_resource type="Texture2D" uid="uid://dchv7tk2gu1dg" path="res://assets/cardMenu/AttackIconNormal.png" id="4_43iro"]
+[ext_resource type="Texture2D" uid="uid://t14x4ea3xjwx" path="res://assets/cardMenu/AttackIconHover.png" id="5_voki5"]
+[ext_resource type="Texture2D" uid="uid://bc4al2h6c8qj0" path="res://assets/cardMenu/DefendIconNormal.png" id="6_5060n"]
+[ext_resource type="Texture2D" uid="uid://bkujulvl55o83" path="res://assets/cardMenu/DefendIconHovered.png" id="7_1dla1"]
+[ext_resource type="Texture2D" uid="uid://b7e5ockuwm8j1" path="res://assets/cardMenu/ShowIconNormal.png" id="8_8u4xw"]
+[ext_resource type="Texture2D" uid="uid://dtgujwrc1u2vd" path="res://assets/cardMenu/ShowIconHovered.png" id="9_ja31i"]
 
-[node name="Card" type="TextureButton"]
+[node name="Card" type="Button"]
 offset_right = 140.0
 offset_bottom = 200.0
+script = ExtResource("1_ap3n8")
+
+[node name="Texture" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("2_6vs7i")
+expand_mode = 1
+
+[node name="CardMenu" type="Control" parent="Texture"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("3_ap3n8")
+
+[node name="ColorRect" type="ColorRect" parent="Texture/CardMenu"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+mouse_force_pass_scroll_events = false
+color = Color(0, 0, 0, 0.2)
+
+[node name="AttackButton" type="TextureButton" parent="Texture/CardMenu"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.05
+anchor_top = 0.35
+anchor_right = 0.478571
+anchor_bottom = 0.65
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+texture_normal = ExtResource("4_43iro")
+texture_hover = ExtResource("5_voki5")
 ignore_texture_size = true
 stretch_mode = 0
-script = ExtResource("1_7p64d")
+metadata/_edit_use_anchors_ = true
+
+[node name="DefendButton" type="TextureButton" parent="Texture/CardMenu"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.535714
+anchor_top = 0.35
+anchor_right = 0.964286
+anchor_bottom = 0.65
+offset_left = -2.0
+offset_right = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+texture_normal = ExtResource("6_5060n")
+texture_hover = ExtResource("7_1dla1")
+ignore_texture_size = true
+stretch_mode = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="ShowButton" type="TextureButton" parent="Texture/CardMenu"]
+visible = false
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.142857
+anchor_top = 0.25
+anchor_right = 0.857143
+anchor_bottom = 0.75
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+texture_normal = ExtResource("8_8u4xw")
+texture_hover = ExtResource("9_ja31i")
+ignore_texture_size = true
+stretch_mode = 0
+metadata/_edit_use_anchors_ = true
+
+[node name="hoverlay" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+
+[connection signal="button_down" from="Texture/CardMenu/AttackButton" to="." method="_on_attack_button_button_down"]
+[connection signal="button_down" from="Texture/CardMenu/DefendButton" to="." method="_on_defend_button_button_down"]
+[connection signal="button_down" from="Texture/CardMenu/ShowButton" to="." method="_on_show_button_button_down"]
