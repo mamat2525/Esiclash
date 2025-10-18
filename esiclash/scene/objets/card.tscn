@@ -11,8 +11,8 @@
 [ext_resource type="Texture2D" uid="uid://dtgujwrc1u2vd" path="res://assets/cardMenu/ShowIconHovered.png" id="9_ja31i"]
 
 [node name="Card" type="Button"]
-offset_right = 140.0
-offset_bottom = 200.0
+offset_right = 189.0
+offset_bottom = 270.0
 script = ExtResource("1_ap3n8")
 
 [node name="Texture" type="TextureRect" parent="."]

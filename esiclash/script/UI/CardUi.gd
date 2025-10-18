@@ -1,7 +1,7 @@
 class_name CardUi
 extends Button
 
-const baseSize = Vector2(140,200)
+const baseSize = Vector2(189,270)
 var basePos = Vector2(0,0)
 
 const espacementEntreCarte = 5

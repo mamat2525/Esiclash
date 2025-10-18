@@ -27,6 +27,7 @@ func _process(_delta: float) -> void:
 			"drawCard":
 				hand_container.draw_card(int(message[1]))
 			"enemieUpdateCardInHand":
+				print("update card in hand:", message[1])
 				opponentHand.setCard(int(message[1]))
 			"startTurn":
 				_on_start_of_round()

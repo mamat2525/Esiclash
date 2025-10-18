@@ -88,7 +88,6 @@ focus_mode = 1
 script = ExtResource("3_0in77")
 
 [node name="ColorRect" type="ColorRect" parent="PlayerField/HandContainer"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -149,7 +148,6 @@ offset_right = 365.0
 offset_bottom = 100.3
 
 [node name="ColorRect" type="ColorRect" parent="PlayerField/ObjetSlotsEnnemi"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -169,7 +167,6 @@ offset_right = 365.0
 offset_bottom = 99.5999
 
 [node name="ColorRect" type="ColorRect" parent="PlayerField/ObjetSlotsAllié"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -189,7 +186,6 @@ offset_right = 365.0
 offset_bottom = 99.8
 
 [node name="ColorRect" type="ColorRect" parent="PlayerField/EsisarienSlotsEnnemi"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -211,7 +207,6 @@ offset_bottom = 100.1
 mouse_filter = 1
 
 [node name="ColorRect" type="ColorRect" parent="PlayerField/EsisarienSlotsAllié"]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

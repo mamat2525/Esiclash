@@ -16,10 +16,10 @@ func _init(peer1 : StreamPeerTCP, peer2 : StreamPeerTCP, roomId_ : int):
 	roomId = roomId_
 
 	for i in range(30):
-		var card = Card.new(randi() % 180)
+		var card = Card.new(67+(randi() % 114))
 		player1.deck.append(card)
 	for i in range(30):
-		var card = Card.new(randi() % 180)
+		var card = Card.new(67+(randi() % 114))
 		player2.deck.append(card)
 	
 	# Mélanger les decks
@@ -27,8 +27,8 @@ func _init(peer1 : StreamPeerTCP, peer2 : StreamPeerTCP, roomId_ : int):
 	player2.deck.shuffle()
 	
 	# Piocher 5 cartes
-	draw_card(player1, 5)
-	draw_card(player2, 5)
+	draw_card(player1, 7)
+	draw_card(player2, 7)
 		
 	
 	if randi() % 2:
@@ -49,6 +49,7 @@ func newMessage(player : int, mess : Array):
 	match mess[0]:
 		"placedCard": # [joueur : <0: joueur 1; 1: joueur2>, "placedCard", emplacementInHand, slot <0:objet, 1:esisarien>, emplacement]
 			if verifCardCanBePlaced(mess):
+				print("placed card")
 				var cardId : String
 				if mess[2] == "0":
 					cardId = "0"
@@ -58,9 +59,10 @@ func newMessage(player : int, mess : Array):
 					cardId = str(joueur.hand[int(mess[1])].id)
 					joueur.objet[int(mess[3])] = joueur.hand[int(mess[1])]
 				
-				joueur.opponent.peer.put_utf8_string("ennemiePlacedCard:{0}:{1}:{2}".format([cardId, mess[2], mess[3]]))
-				joueur.opponent.peer.put_utf8_string("enemieUpdateCardInHand:"+str(len(player1.hand) - 1))
 				joueur.hand.remove_at(int(mess[1]))
+				joueur.opponent.peer.put_utf8_string("ennemiePlacedCard:{0}:{1}:{2}".format([cardId, mess[2], mess[3]]))
+				joueur.opponent.peer.put_utf8_string("enemieUpdateCardInHand:"+str(len(joueur.hand)))
+				
 			else:#TODO géré si la carte ne peut pas être placé -> (tout?) synchroniser
 				print_debug("[serveur/GameInstance] la carte ne peux pas être placé : ", mess)
 		"endOfTurn":
