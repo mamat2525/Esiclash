@@ -4,10 +4,10 @@
 [ext_resource type="Script" uid="uid://bawr8s48f3k0w" path="res://script/UI/hoverlay_place_possible.gd" id="2_mngjm"]
 
 [node name="hoverlayPlacePossible" type="TextureButton"]
-offset_left = -80.0
-offset_top = -110.0
-offset_right = 80.0
-offset_bottom = 110.0
+offset_left = -94.5
+offset_top = -135.0
+offset_right = 94.5
+offset_bottom = 135.0
 size_flags_horizontal = 4
 focus_mode = 0
 action_mode = 0
@@ -20,19 +20,16 @@ script = ExtResource("2_mngjm")
 modulate = Color(1, 1, 1, 0.490196)
 z_index = -1
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -70.0
-offset_top = -100.0
-offset_right = 70.0
-offset_bottom = 100.0
+anchors_preset = -1
+anchor_left = 0.0634921
+anchor_top = 0.0444444
+anchor_right = 0.941799
+anchor_bottom = 0.955556
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 expand_mode = 1
+metadata/_edit_use_anchors_ = true
 
 [connection signal="button_down" from="." to="." method="_on_button_down"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
